@@ -57,6 +57,14 @@ Táto konfigurácia je navrhnutá pre umývačku riadu **Bosch SMV88TX46E**.
 * **Rýchly Výber Programov (Chips):** Možnosť rýchlo zvoliť najčastejšie programy s vizuálnym zvýraznením aktívneho.
 * **Progress Bar:** Počas behu sa zobrazuje vizuálny progress bar s percentuálnym priebehom.
 * **Informačné Riadky:** Prehľad zásob (Soľ, Leštidlo), stavu dvierok, aktuálnej spotreby a predpokladaného konca programu.
+<img src="https://github.com/user-attachments/assets/6130001c-0e5b-4d14-b5fa-d48d614d0129" width="40%" alt="Screenshot_20251118_205739_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/87907fea-2476-491c-bc59-4c76c4d6bf91" width="40%" alt="Screenshot_20251118_205350_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/2923bb13-3fbf-4c94-a1ae-f2f76c75c4d1" width="40%" alt="Screenshot_20251118_204240_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/c30e1e5e-54cd-49ea-b55a-807bd6c25e7f" width="40%" alt="Screenshot_20251118_204055_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/116e1c24-ef6c-477c-ad5c-a236b90e33ba" width="40%" alt="Screenshot_20251118_204041_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/4cc93d0e-82cb-4094-b311-c781f979ab76" width="40%" alt="Screenshot_20251118_204029_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/5b52edc6-0e93-416e-b574-bd356eee5461" width="40%" alt="Screenshot_20251118_204015_Home Assistant"/>
+<img src="https://github.com/user-attachments/assets/a4472ad7-9d20-4e76-ad6f-ca3128dc77bf" width="40%" alt="Screenshot_20251118_203937_Home Assistant"/>
 
 ---
 

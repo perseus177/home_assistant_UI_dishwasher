@@ -573,6 +573,32 @@ cards:
                         if (isNaN(width)) width = 0;
                         return `<div style="width: ${width}%; height: 100%; background-color: #4caf50; border-radius: 4px; transition: width 0.5s ease;"></div>`;
                       ]]]
+              - type: conditional
+                conditions:
+                  - entity: sensor.dishwasher_cas_ukoncenia_programu
+                    state_not: unavailable
+                  - entity: sensor.dishwasher_cas_ukoncenia_programu
+                    state_not: unknown
+                card:
+                  type: custom:mushroom-template-card
+                  entity: sensor.dishwasher_cas_ukoncenia_programu
+                  primary: Koniec programu
+                  secondary: >-
+                    {% set timestamp =
+                    as_timestamp(states('sensor.dishwasher_cas_ukoncenia_programu'),
+                    0) %} {% set time_str = timestamp |
+                    timestamp_custom('%H:%M', local=true) %} {% set
+                    minutes_remaining = ((timestamp - as_timestamp(now(), 0)) /
+                    60) | int %}
+
+                    {{ time_str }} (za {{ minutes_remaining }} min)
+                  icon: mdi:clock-end
+                  icon_color: purple
+                  card_mod:
+                    style: >
+                      ha-card { background: none !important; border: none
+                      !important; box-shadow: none !important;  margin-top: 5px
+                      !important; margin-bottom: 5px !important; }						  
               - type: markdown
                 content: <hr>
                 card_mod:
@@ -590,6 +616,7 @@ cards:
                       opacity: 0.2;
                       margin: 10px 0;
                     }
+				
               - type: horizontal-stack
                 cards:
                   - type: conditional
@@ -733,34 +760,6 @@ cards:
                         !important; box-shadow: none !important;  margin-bottom:
                         0px !important; margin-left: -10px !important; flex: 1;
                         }
-              - type: conditional
-                conditions:
-                  - entity: sensor.dishwasher_cas_ukoncenia_programu
-                    state_not: unavailable
-                  - entity: sensor.dishwasher_cas_ukoncenia_programu
-                    state_not: unknown
-                  - entity: sensor.dishwasher_prevadzkovy_stav
-                    state_not: run
-                card:
-                  type: custom:mushroom-template-card
-                  entity: sensor.dishwasher_cas_ukoncenia_programu
-                  primary: Koniec programu
-                  secondary: >-
-                    {% set timestamp =
-                    as_timestamp(states('sensor.dishwasher_cas_ukoncenia_programu'),
-                    0) %} {% set time_str = timestamp |
-                    timestamp_custom('%H:%M', local=true) %} {% set
-                    minutes_remaining = ((timestamp - as_timestamp(now(), 0)) /
-                    60) | int %}
-
-                    {{ time_str }} (za {{ minutes_remaining }} min)
-                  icon: mdi:clock-end
-                  icon_color: purple
-                  card_mod:
-                    style: >
-                      ha-card { background: none !important; border: none
-                      !important; box-shadow: none !important;  margin-top: 5px
-                      !important; margin-bottom: 5px !important; }
               - type: markdown
                 content: <hr>
                 card_mod:

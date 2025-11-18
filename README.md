@@ -46,6 +46,10 @@ Táto konfigurácia je navrhnutá pre umývačku riadu **Bosch SMV88TX46E**.
 * **Farebné notifikácie:** Ikona karty mení farbu podľa kritickosti (Modrá pre beh, Červená pre chybu/akciu).
 * **Animácia (Card-mod):** Ikona umývačky sa jemne trasie, ak je program v stave `run` (imitácia umývania), a zmení sa na `mdi:dishwasher-alert`.
 
+![Screenshot_20251118_203904_Home Assistant](https://github.com/user-attachments/assets/9052b0f6-b6b7-41bc-87d7-7d02bd232443)
+![Screenshot_20251118_205702_Home Assistant](https://github.com/user-attachments/assets/59c396c1-639d-4fed-bb2e-ed88ddfc1c1c)
+
+
 #### 2. Detailné Ovládanie (Pop-up Modálne Okno)
 
 * **Sekvenčné Zapnutie:** Podmienené veľké tlačidlá s kruhovým vizuálom pre postupné zapnutie (Zásuvka (Tasmota) -> Umývačka (Home Connect)).

@@ -1,0 +1,1004 @@
+type: vertical-stack
+cards:
+  - type: custom:mushroom-template-card
+    entity: sensor.dishwasher_prevadzkovy_stav
+    icon: mdi:dishwasher
+    primary: Umývačka riadu
+    secondary: >-
+      {% set power = states('switch.umyvackazasuvka') %}  {% set machine_on =
+      states('switch.dishwasher_vykon') %} {% set status =
+      states('sensor.dishwasher_prevadzkovy_stav') %}
+
+      {% if power == 'off' %}
+        Odpojená
+      {% elif machine_on == 'off' %}
+        Vypnutá
+      {% elif status == 'run' %}
+        Prebieha cyklus
+      {% elif status == 'pause' %}
+        Pozastavená
+      {% elif status == 'delayedstart' %}
+        Odložený štart
+      {% elif status == 'actionrequired' %}
+        Vyžaduje akciu
+      {% elif status == 'finished' %}
+        Ukončené
+      {% elif status == 'error' %}
+        Chyba
+      {% else %}
+        Pripravená
+      {% endif %}
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          title: " "
+          style: |
+            --popup-min-width: 400px;
+            --popup-max-width: 450px;
+            --popup-background-color: transparent;
+            --popup-border-radius: 20px;
+            background: var(--primary-background-color);
+          content:
+            type: vertical-stack
+            cards:
+              - type: custom:button-card
+                entity: sensor.dishwasher_prevadzkovy_stav
+                name: Umývačka riadu
+                show_name: true
+                show_label: true
+                show_state: true
+                show_icon: false
+                label: |
+                  [[[
+                    var room = "Kuchyňa";
+                    var dev_info = "";
+                    try {
+                      var dev_id = hass.entities[entity.entity_id].device_id;
+                      var dev = hass.devices[dev_id];
+                      if (dev) {
+                        var manuf = dev.manufacturer ? dev.manufacturer : "";
+                        var model = dev.model ? dev.model : "";
+                        dev_info = manuf + " " + model;
+                      }
+                    } catch (e) {}
+                    if (dev_info != "" && dev_info != " ") {
+                      return room + " • " + dev_info;
+                    }
+                    return room;
+                  ]]]
+                state_display: |
+                  [[[
+                    var power = states['switch.umyvackazasuvka'].state;
+                    var machine_on = states['switch.dishwasher_vykon'].state;
+                    var status = entity.state;
+                    if (power == 'off') return 'Odpojená'; 
+                    if (machine_on == 'off') return 'Vypnutá';
+                    if (status == 'run') return 'Prebieha cyklus';
+                    if (status == 'pause') return 'Pozastavená';
+                    if (status == 'delayedstart') return 'Odložený štart';
+                    if (status == 'actionrequired') return 'Vyžaduje akciu';
+                    if (status == 'finished') return 'Ukončené';
+                    if (status == 'error') return 'Chyba';
+                    return 'Pripravená';
+                  ]]]
+                styles:
+                  card:
+                    - background: none
+                    - border: none
+                    - box-shadow: none
+                    - padding: 20px 25px 0px 25px
+                    - text-align: left
+                  grid:
+                    - grid-template-areas: "\"n\" \"l\" \"s\""
+                    - grid-template-columns: 1fr
+                    - grid-template-rows: min-content min-content min-content
+                  name:
+                    - font-size: 18px
+                    - font-weight: bold
+                    - color: var(--primary-text-color)
+                    - justify-self: start
+                  label:
+                    - font-size: 12px
+                    - color: var(--secondary-text-color)
+                    - margin-top: 5px
+                    - justify-self: start
+                    - padding-bottom: 10px
+                  state:
+                    - font-size: 34px
+                    - font-weight: bold
+                    - letter-spacing: "-0.5px"
+                    - justify-self: start
+                    - line-height: 1.2
+                    - color: |-
+                        [[[
+                          var power = states['switch.umyvackazasuvka'].state;
+                          var machine_on = states['switch.dishwasher_vykon'].state;
+                          var status = entity.state;
+                          if (power == 'off') return 'var(--disabled-text-color)';
+                          if (machine_on == 'off') return 'var(--disabled-text-color)';
+                          if (status == 'run') return '#2d9cdb'; 
+                          if (status == 'finished') return '#4caf50';
+                          if (status == 'error') return 'red';
+                          return 'var(--primary-text-color)';
+                        ]]]
+              - type: conditional
+                conditions:
+                  - entity: switch.umyvackazasuvka
+                    state: "off"
+                card:
+                  type: custom:button-card
+                  entity: switch.umyvackazasuvka
+                  name: Zapnúť zásuvku
+                  show_name: true
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: toggle
+                  styles:
+                    card:
+                      - height: 320px
+                      - background: none
+                      - border: none
+                      - box-shadow: none
+                      - padding: 0px
+                    grid:
+                      - position: relative
+                      - place-items: center
+                    name:
+                      - font-size: 18px
+                      - font-weight: bold
+                      - color: "#2d9cdb"
+                      - background: white
+                      - padding: 12px 30px
+                      - border-radius: 30px
+                      - box-shadow: 0px 5px 15px rgba(0,0,0,0.1)
+                      - z-index: 5
+                    custom_fields:
+                      circle_bg:
+                        - position: absolute
+                        - top: 50%
+                        - left: 50%
+                        - width: 230px
+                        - height: 230px
+                        - border-radius: 50%
+                        - transform: translate(-50%, -50%)
+                        - background: >-
+                            radial-gradient(circle, white 45%, #f8f9fa 60%,
+                            #e9ecef 70%)
+                        - box-shadow: inset 0px 0px 20px rgba(0,0,0,0.02)
+                        - z-index: 1
+                      circle_ring:
+                        - position: absolute
+                        - top: 50%
+                        - left: 50%
+                        - width: 270px
+                        - height: 270px
+                        - border-radius: 50%
+                        - transform: translate(-50%, -50%)
+                        - border: 20px solid rgba(127, 127, 127, 0.1)
+                        - z-index: 0
+                  custom_fields:
+                    circle_bg: " "
+                    circle_ring: " "
+              - type: conditional
+                conditions:
+                  - entity: switch.umyvackazasuvka
+                    state: "on"
+                  - entity: switch.dishwasher_vykon
+                    state: "off"
+                card:
+                  type: custom:button-card
+                  entity: switch.dishwasher_vykon
+                  name: Zapnúť umývačku
+                  show_name: true
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: toggle
+                  styles:
+                    card:
+                      - height: 320px
+                      - background: none
+                      - border: none
+                      - box-shadow: none
+                      - padding: 0px
+                    grid:
+                      - position: relative
+                      - place-items: center
+                    name:
+                      - font-size: 18px
+                      - font-weight: bold
+                      - color: "#2d9cdb"
+                      - background: white
+                      - padding: 12px 30px
+                      - border-radius: 30px
+                      - box-shadow: 0px 5px 15px rgba(0,0,0,0.1)
+                      - z-index: 5
+                    custom_fields:
+                      circle_bg:
+                        - position: absolute
+                        - top: 50%
+                        - left: 50%
+                        - width: 230px
+                        - height: 230px
+                        - border-radius: 50%
+                        - transform: translate(-50%, -50%)
+                        - background: >-
+                            radial-gradient(circle, white 45%, #f8f9fa 60%,
+                            #e9ecef 70%)
+                        - box-shadow: inset 0px 0px 20px rgba(0,0,0,0.02)
+                        - z-index: 1
+                      circle_ring:
+                        - position: absolute
+                        - top: 50%
+                        - left: 50%
+                        - width: 270px
+                        - height: 270px
+                        - border-radius: 50%
+                        - transform: translate(-50%, -50%)
+                        - border: 20px solid rgba(127, 127, 127, 0.1)
+                        - z-index: 0
+                  custom_fields:
+                    circle_bg: " "
+                    circle_ring: " "
+              - type: conditional
+                conditions:
+                  - entity: switch.umyvackazasuvka
+                    state: "on"
+                  - entity: switch.dishwasher_vykon
+                    state: "on"
+                card:
+                  type: custom:button-card
+                  entity: select.dishwasher_aktivny_program
+                  name: " "
+                  show_name: false
+                  show_icon: false
+                  show_state: true
+                  tap_action:
+                    action: |
+                      [[[
+                        var remote = states['binary_sensor.dishwasher_dialkove_startovanie'].state;
+                        var door = states['sensor.dishwasher_dvere'].state;
+                        var status = states['sensor.dishwasher_prevadzkovy_stav'].state;
+                        if (status == 'finished' || status == 'run') return 'none';
+                        if (remote == 'on' && door != 'open') return 'more-info';
+                        return 'none';
+                      ]]]
+                  state_display: |
+                    [[[
+                      var remote = states['binary_sensor.dishwasher_dialkove_startovanie'].state;
+                      var door = states['sensor.dishwasher_dvere'].state;
+                      var status = states['sensor.dishwasher_prevadzkovy_stav'].state;
+                      if (status == 'finished') return 'Program ukončený';
+                      if (remote == 'on' && door == 'open') return 'Zatvor dvierka';
+
+                      var prog;
+                      if (remote == 'off') {
+                        prog = states['select.dishwasher_vybrany_program'].state;
+                      } else {
+                        prog = entity.state;
+                      }
+                      if (prog == 'unknown' || prog == 'unavailable' || prog == '') return 'Zvoľte program';
+                      var map = {
+                        'dishcare_dishwasher_program_intensiv_70': 'Intenzívny 70°C',
+                        'dishcare_dishwasher_program_auto_2': 'Auto',
+                        'dishcare_dishwasher_program_eco_50': 'Eco 50°C',
+                        'dishcare_dishwasher_program_night_wash': 'Nočné',
+                        'dishcare_dishwasher_program_kurz_60': 'Krátky 60°C',
+                        'dishcare_dishwasher_program_glas_40': 'Sklo 40°C',
+                        'dishcare_dishwasher_program_quick_45': 'Rýchly 45°C',
+                        'dishcare_dishwasher_program_pre_rinse': 'Predumytie',
+                        'dishcare_dishwasher_program_machine_care': 'Čistenie'
+                      };
+                      return map[prog] ? map[prog] : prog;
+                    ]]]
+                  styles:
+                    card:
+                      - height: 320px
+                      - background: none
+                      - border: none
+                      - box-shadow: none
+                      - padding: 0px
+                      - margin-bottom: "-15px"
+                    grid:
+                      - position: relative
+                      - place-items: center
+                    state:
+                      - font-size: 18px
+                      - font-weight: bold
+                      - background: white
+                      - padding: 12px 30px
+                      - border-radius: 30px
+                      - box-shadow: 0px 5px 15px rgba(0,0,0,0.1)
+                      - z-index: 5
+                      - color: |
+                          [[[
+                            var remote = states['binary_sensor.dishwasher_dialkove_startovanie'].state;
+                            var door = states['sensor.dishwasher_dvere'].state;
+                            var status = states['sensor.dishwasher_prevadzkovy_stav'].state;
+                            if (status == 'finished') return '#4caf50';
+                            if (remote == 'on' && door == 'open') return '#ff9800';
+                            return '#2d9cdb';
+                          ]]]
+                    custom_fields:
+                      circle_bg:
+                        - position: absolute
+                        - top: 50%
+                        - left: 50%
+                        - width: 230px
+                        - height: 230px
+                        - border-radius: 50%
+                        - transform: translate(-50%, -50%)
+                        - background: >-
+                            radial-gradient(circle, white 45%, #f8f9fa 60%,
+                            #e9ecef 70%)
+                        - box-shadow: inset 0px 0px 20px rgba(0,0,0,0.02)
+                        - z-index: 1
+                        - box-sizing: border-box
+                      circle_ring:
+                        - position: absolute
+                        - top: 50%
+                        - left: 50%
+                        - width: 270px
+                        - height: 270px
+                        - border-radius: 50%
+                        - margin-top: "-135px"
+                        - margin-left: "-135px"
+                        - border: 20px solid rgba(127, 127, 127, 0.1)
+                        - z-index: 0
+                        - box-sizing: border-box
+                        - border-top-color: |
+                            [[[
+                              var remote = states['binary_sensor.dishwasher_dialkove_startovanie'].state;
+                              var door = states['sensor.dishwasher_dvere'].state;
+                              var status = states['sensor.dishwasher_prevadzkovy_stav'].state;
+                              if (status == 'finished') return '#4caf50';
+                              if (remote == 'on' && door == 'open') return '#ff9800';
+                              if (status == 'run') return '#2d9cdb';
+                              return '#2d9cdb'; 
+                            ]]]
+                        - animation: |
+                            [[[
+                              if (states['sensor.dishwasher_prevadzkovy_stav'].state == 'run') return 'turning 2s linear infinite';
+                              return 'none';
+                            ]]]
+                  custom_fields:
+                    circle_bg: " "
+                    circle_ring: " "
+                  extra_styles: |
+                    @keyframes turning {
+                      0% { transform: rotate(0deg); }
+                      100% { transform: rotate(360deg); }
+                    }
+              - type: conditional
+                conditions:
+                  - entity: switch.umyvackazasuvka
+                    state: "on"
+                  - entity: switch.dishwasher_vykon
+                    state: "on"
+                  - entity: binary_sensor.dishwasher_dialkove_startovanie
+                    state: "on"
+                  - entity: sensor.dishwasher_dvere
+                    state_not: open
+                  - entity: sensor.dishwasher_prevadzkovy_stav
+                    state_not: run
+                  - entity: sensor.dishwasher_prevadzkovy_stav
+                    state_not: finished
+                card:
+                  type: custom:mushroom-chips-card
+                  alignment: center
+                  chips:
+                    - type: template
+                      content: Auto
+                      tap_action:
+                        action: call-service
+                        service: select.select_option
+                        target:
+                          entity_id: select.dishwasher_aktivny_program
+                        data:
+                          option: dishcare_dishwasher_program_auto_2
+                      card_mod:
+                        style: |
+                          ha-card {
+                            {% if is_state('select.dishwasher_aktivny_program', 'dishcare_dishwasher_program_auto_2') %}
+                              background: #2d9cdb !important;
+                              --text-color: white !important;
+                              color: white !important;
+                            {% else %}
+                              background: #f0f0f0 !important;
+                              --text-color: black !important;
+                              color: black !important;
+                            {% endif %}
+                            border: none;
+                          }
+                    - type: template
+                      content: Rýchly 45°C
+                      tap_action:
+                        action: call-service
+                        service: select.select_option
+                        target:
+                          entity_id: select.dishwasher_aktivny_program
+                        data:
+                          option: dishcare_dishwasher_program_quick_45
+                      card_mod:
+                        style: |
+                          ha-card {
+                            {% if is_state('select.dishwasher_aktivny_program', 'dishcare_dishwasher_program_quick_45') %}
+                              background: #2d9cdb !important;
+                              --text-color: white !important;
+                              color: white !important;
+                            {% else %}
+                              background: #f0f0f0 !important;
+                              --text-color: black !important;
+                              color: black !important;
+                            {% endif %}
+                            border: none;
+                          }
+                    - type: template
+                      content: Eco 50°C
+                      tap_action:
+                        action: call-service
+                        service: select.select_option
+                        target:
+                          entity_id: select.dishwasher_aktivny_program
+                        data:
+                          option: dishcare_dishwasher_program_eco_50
+                      card_mod:
+                        style: |
+                          ha-card {
+                            {% if is_state('select.dishwasher_aktivny_program', 'dishcare_dishwasher_program_eco_50') %}
+                              background: #2d9cdb !important;
+                              --text-color: white !important;
+                              color: white !important;
+                            {% else %}
+                              background: #f0f0f0 !important;
+                              --text-color: black !important;
+                              color: black !important;
+                            {% endif %}
+                            border: none;
+                          }
+              - type: conditional
+                conditions:
+                  - entity: switch.umyvackazasuvka
+                    state: "on"
+                  - entity: switch.dishwasher_vykon
+                    state: "on"
+                card:
+                  type: custom:mushroom-chips-card
+                  alignment: center
+                  card_mod:
+                    style: |
+                      ha-card {
+                        {% if is_state('binary_sensor.dishwasher_dialkove_startovanie', 'off') 
+                            or is_state('sensor.dishwasher_dvere', 'open') 
+                            or is_state('sensor.dishwasher_prevadzkovy_stav', 'finished') 
+                            or is_state('sensor.dishwasher_prevadzkovy_stav', 'run') %}
+                          pointer-events: none;
+                          opacity: 0.8;
+                        {% endif %}
+                        margin-bottom: 10px;
+                        --chip-background: var(--card-background-color);
+                      }
+                  chips:
+                    - type: template
+                      entity: switch.dishwasher_intenzivna_zona
+                      icon: mdi:pot
+                      icon_color: >-
+                        {{ 'blue' if
+                        is_state('switch.dishwasher_intenzivna_zona', 'on') else
+                        'grey' }}
+                      tap_action:
+                        action: toggle
+                    - type: template
+                      entity: switch.dishwasher_extra_suche
+                      icon: mdi:heat-wave
+                      icon_color: >-
+                        {{ 'blue' if is_state('switch.dishwasher_extra_suche',
+                        'on') else 'grey' }}
+                      tap_action:
+                        action: toggle
+                    - type: template
+                      entity: switch.dishwasher_vario_rychlost
+                      icon: mdi:speedometer
+                      icon_color: >-
+                        {{ 'blue' if
+                        is_state('switch.dishwasher_vario_rychlost', 'on') else
+                        'grey' }}
+                      tap_action:
+                        action: toggle
+                    - type: template
+                      entity: switch.dishwasher_hygiena
+                      icon: mdi:medical-bag
+                      icon_color: >-
+                        {{ 'blue' if is_state('switch.dishwasher_hygiena', 'on')
+                        else 'grey' }}
+                      tap_action:
+                        action: toggle
+              - type: conditional
+                conditions:
+                  - entity: sensor.dishwasher_prevadzkovy_stav
+                    state: run
+                card:
+                  type: custom:button-card
+                  entity: sensor.dishwasher_priebeh_programu
+                  name: Priebeh programu
+                  show_name: true
+                  show_state: true
+                  show_icon: true
+                  icon: mdi:progress-clock
+                  styles:
+                    card:
+                      - background: var(--card-background-color)
+                      - border: none
+                      - box-shadow: none
+                      - padding: 12px
+                      - margin-bottom: 10px
+                    grid:
+                      - grid-template-areas: "\"i n s\" \"i bar bar\""
+                      - grid-template-columns: 42px 1fr auto
+                      - grid-template-rows: min-content min-content
+                      - column-gap: 0px
+                    icon:
+                      - color: "#4caf50"
+                      - width: 24px
+                      - height: 24px
+                      - justify-self: center
+                    name:
+                      - justify-self: start
+                      - align-self: end
+                      - font-size: 14px
+                      - font-weight: bold
+                      - color: var(--primary-text-color)
+                      - margin-left: 10px
+                    state:
+                      - justify-self: end
+                      - align-self: end
+                      - font-size: 14px
+                      - color: var(--secondary-text-color)
+                      - font-weight: bold
+                    custom_fields:
+                      bar:
+                        - background: rgba(var(--rgb-primary-text-color), 0.1)
+                        - height: 6px
+                        - border-radius: 4px
+                        - overflow: hidden
+                        - margin-top: 8px
+                        - margin-left: 10px
+                  custom_fields:
+                    bar: |
+                      [[[
+                        var width = entity.state;
+                        if (isNaN(width)) width = 0;
+                        return `<div style="width: ${width}%; height: 100%; background-color: #4caf50; border-radius: 4px; transition: width 0.5s ease;"></div>`;
+                      ]]]
+              - type: markdown
+                content: <hr>
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: none;
+                      border: none;
+                      box-shadow: none;
+                      margin-top: 0px;
+                      margin-bottom: 0px;
+                    }
+                    hr {
+                      border: 0;
+                      border-top: 1px solid var(--divider-color);
+                      opacity: 0.2;
+                      margin: 10px 0;
+                    }
+              - type: horizontal-stack
+                cards:
+                  - type: conditional
+                    conditions:
+                      - entity: switch.umyvackazasuvka
+                        state: "on"
+                    card:
+                      type: custom:mushroom-template-card
+                      entity: binary_sensor.dishwasher_dialkove_startovanie
+                      primary: Diaľkový štart
+                      secondary: >-
+                        {{
+                        state_translated('binary_sensor.dishwasher_dialkove_startovanie')
+                        }}
+                      icon: mdi:remote
+                      tap_action:
+                        action: none
+                      icon_color: >-
+                        {% if
+                        is_state('binary_sensor.dishwasher_dialkove_startovanie',
+                        'on') %} green {% else %} grey {% endif %}
+                      card_mod:
+                        style: >
+                          ha-card {  background: none !important; border: none
+                          !important; box-shadow: none !important; 
+                          margin-bottom: 0px !important; margin-right: -10px
+                          !important;  flex: 1; }
+                  - type: conditional
+                    conditions:
+                      - entity: switch.dishwasher_vykon
+                        state: "on"
+                      - entity: sensor.dishwasher_prevadzkovy_stav
+                        state_not: run
+                    card:
+                      type: custom:mushroom-entity-card
+                      entity: switch.dishwasher_vykon
+                      name: Vypnúť umývačku
+                      icon: mdi:power-standby
+                      icon_color: red
+                      tap_action:
+                        action: toggle
+                      card_mod:
+                        style: >
+                          ha-card {  background: none !important; border: none
+                          !important; box-shadow: none !important; 
+                          margin-bottom: 0px !important; margin-left: -10px
+                          !important; flex: 1; }
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.umyvackazasuvka_energy_power
+                    primary: Aktuálna spotreba
+                    secondary: >-
+                      {{ states('sensor.umyvackazasuvka_energy_power') |
+                      float(0) | round(1) }} W
+                    icon: mdi:lightning-bolt
+                    icon_color: yellow
+                    card_mod:
+                      style: >
+                        ha-card {  background: none !important; border: none
+                        !important; box-shadow: none !important;  margin-bottom:
+                        0px !important; margin-right: -10px !important; flex: 1;
+                        }
+                  - type: conditional
+                    conditions:
+                      - entity: switch.umyvackazasuvka
+                        state: "on"
+                    card:
+                      type: custom:mushroom-template-card
+                      entity: sensor.dishwasher_dvere
+                      primary: Dvierka
+                      secondary: >-
+                        {% set door = states('sensor.dishwasher_dvere') %} {% if
+                        door == 'open' %} Otvorené {% elif door == 'locked' %}
+                        Zamknuté {% elif door == 'closed' %} Zatvorené {% else
+                        %} {{ door }} {% endif %}
+                      icon: >-
+                        {% if is_state('sensor.dishwasher_dvere', 'open') %}
+                        mdi:door-open {% elif
+                        is_state('sensor.dishwasher_dvere', 'locked') %}
+                        mdi:door-closed-lock {% else %} mdi:door-closed {% endif
+                        %}
+                      icon_color: >-
+                        {% if is_state('sensor.dishwasher_dvere', 'open') %}
+                        orange else grey {% endif %}
+                      card_mod:
+                        style: >
+                          ha-card {  background: none !important; border: none
+                          !important; box-shadow: none !important; 
+                          margin-bottom: 0px !important; margin-left: -10px
+                          !important; flex: 1; }
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.dishwasher_sol_takmer_prazdna
+                    primary: Soľ
+                    secondary: >-
+                      {% if is_state('sensor.dishwasher_sol_takmer_prazdna',
+                      'on') %}
+                        Treba doplniť
+                      {% else %}
+                        Dostatok
+                      {% endif %}
+                    icon: mdi:shaker
+                    icon_color: >-
+                      {% if is_state('sensor.dishwasher_sol_takmer_prazdna',
+                      'on') %}
+                        red
+                      {% else %}
+                        green
+                      {% endif %}
+                    card_mod:
+                      style: >
+                        ha-card { background: none !important; border: none
+                        !important; box-shadow: none !important;  margin-bottom:
+                        0px !important; margin-right: -10px !important; flex: 1;
+                        }
+                  - type: custom:mushroom-template-card
+                    entity: sensor.dishwasher_lestidlo_takmer_prazdne
+                    primary: Leštidlo
+                    secondary: >-
+                      {% if
+                      is_state('sensor.dishwasher_lestidlo_takmer_prazdne',
+                      'on') %}
+                        Treba doplniť
+                      {% else %}
+                        Dostatok
+                      {% endif %}
+                    icon: mdi:bottle-tonic-outline
+                    icon_color: >-
+                      {% if
+                      is_state('sensor.dishwasher_lestidlo_takmer_prazdne',
+                      'on') %}
+                        red
+                      {% else %}
+                        green
+                      {% endif %}
+                    card_mod:
+                      style: >
+                        ha-card { background: none !important; border: none
+                        !important; box-shadow: none !important;  margin-bottom:
+                        0px !important; margin-left: -10px !important; flex: 1;
+                        }
+              - type: conditional
+                conditions:
+                  - entity: sensor.dishwasher_cas_ukoncenia_programu
+                    state_not: unavailable
+                  - entity: sensor.dishwasher_cas_ukoncenia_programu
+                    state_not: unknown
+                  - entity: sensor.dishwasher_prevadzkovy_stav
+                    state_not: run
+                card:
+                  type: custom:mushroom-template-card
+                  entity: sensor.dishwasher_cas_ukoncenia_programu
+                  primary: Koniec programu
+                  secondary: >-
+                    {% set timestamp =
+                    as_timestamp(states('sensor.dishwasher_cas_ukoncenia_programu'),
+                    0) %} {% set time_str = timestamp |
+                    timestamp_custom('%H:%M', local=true) %} {% set
+                    minutes_remaining = ((timestamp - as_timestamp(now(), 0)) /
+                    60) | int %}
+
+                    {{ time_str }} (za {{ minutes_remaining }} min)
+                  icon: mdi:clock-end
+                  icon_color: purple
+                  card_mod:
+                    style: >
+                      ha-card { background: none !important; border: none
+                      !important; box-shadow: none !important;  margin-top: 5px
+                      !important; margin-bottom: 5px !important; }
+              - type: markdown
+                content: <hr>
+                card_mod:
+                  style: >
+                    ha-card { background: none; border: none; box-shadow: none;
+                    margin-top: 0px; margin-bottom: 0px; }
+
+                    hr { border: 0; border-top: 1px solid var(--divider-color);
+                    opacity: 0.2; margin: 10px 0; }
+    features_position: bottom
+    color: >-
+      {% set power_state = states('switch.umyvackazasuvka') %} {% set status =
+      states('sensor.dishwasher_prevadzkovy_stav') %} {% if power_state == 'off'
+      %}
+        grey
+      {% elif power_state == 'on' and status == 'run' %}
+        blue
+      {% elif power_state == 'on' and status in ['error', 'actionrequired'] %}
+        red
+      {% elif power_state == 'on' %}
+        lightgrey
+      {% else %}
+        grey
+      {% endif %}
+    card_mod:
+      style:
+        ha-tile-icon$: |
+          /* Animácia trasenia - imituje umývanie */
+          @keyframes washing {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+          }
+          .container {
+            /* Aplikovanie animácie len ak je stav 'run' */
+            {% if is_state('sensor.dishwasher_prevadzkovy_stav', 'run') %}
+              animation: washing 0.2s ease-in-out infinite;
+            {% else %}
+              animation: none;
+            {% endif %}
+          }
+        ha-state-icon$: |
+          /* Voliteľná dynamická zmena ikony pri umývaní */
+          ha-state-icon {
+            {% if is_state('sensor.dishwasher_prevadzkovy_stav', 'run') %}
+              --card-mod-icon: mdi:dishwasher-alert !important;
+            {% else %}
+              --card-mod-icon: mdi:dishwasher !important;
+            {% endif %}
+          }
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: conditional
+        conditions:
+          - entity: sensor.dishwasher_prevadzkovy_stav
+            state: run
+        chip:
+          type: template
+          icon: mdi:playlist-play
+          icon_color: orange
+          content: |-
+            {% set program_names = {
+              'dishcare_dishwasher_program_intensiv_70': 'Intenzívny 70°C',
+              'dishcare_dishwasher_program_auto_2': 'Auto',
+              'dishcare_dishwasher_program_eco_50': 'Eco 50°C',
+              'dishcare_dishwasher_program_night_wash': 'Nočné umývanie',
+              'dishcare_dishwasher_program_kurz_60': 'Krátky 60°C',
+              'dishcare_dishwasher_program_glas_40': 'Sklo 40°C',
+              'dishcare_dishwasher_program_quick_45': 'Rýchly 45°C',
+              'dishcare_dishwasher_program_pre_rinse': 'Predumytie',
+              'dishcare_dishwasher_program_machine_care': 'Starostlivosť o umývačku'
+            } %} Program: {{
+              program_names[states('select.dishwasher_vybrany_program')] 
+              if states('select.dishwasher_vybrany_program') in program_names 
+              else states('select.dishwasher_vybrany_program') 
+            }}
+          tap_action:
+            action: none
+      - type: conditional
+        conditions:
+          - entity: sensor.dishwasher_prevadzkovy_stav
+            state: run
+          - entity: sensor.dishwasher_priebeh_programu
+            state_not: unknown
+          - entity: sensor.dishwasher_priebeh_programu
+            state_not: unavailable
+          - entity: sensor.dishwasher_priebeh_programu
+            state_not: ""
+          - entity: sensor.dishwasher_priebeh_programu
+            state_not: none
+        chip:
+          type: template
+          icon: mdi:progress-clock
+          icon_color: green
+          content: |
+            Priebeh: {{ states('sensor.dishwasher_priebeh_programu') }}%
+          tap_action:
+            action: none
+      - type: conditional
+        conditions:
+          - entity: sensor.dishwasher_prevadzkovy_stav
+            state: run
+        chip:
+          type: template
+          icon: mdi:clock-end
+          icon_color: blue
+          content: >-
+            {% set end_time_raw =
+            states('sensor.dishwasher_cas_ukoncenia_programu') %} {% if
+            end_time_raw not in ['unknown', 'unavailable', 'none', ''] %}
+              Koniec o {{ as_timestamp(end_time_raw) |
+            timestamp_custom('%H:%M', local=true) }} {% else %}
+              Čas konca nedostupný
+            {% endif %}
+          tap_action:
+            action: none
+      - type: conditional
+        conditions:
+          - entity: sensor.dishwasher_prevadzkovy_stav
+            state: run
+          - entity: sensor.dishwasher_cas_ukoncenia_programu
+            state_not: unknown
+          - entity: sensor.dishwasher_cas_ukoncenia_programu
+            state_not: unavailable
+          - entity: sensor.dishwasher_cas_ukoncenia_programu
+            state_not: ""
+          - entity: sensor.dishwasher_cas_ukoncenia_programu
+            state_not: none
+        chip:
+          type: template
+          icon: mdi:timer-sand
+          icon_color: purple
+          content: >-
+            {% set end_time_raw =
+            states('sensor.dishwasher_cas_ukoncenia_programu') %} {% if
+            end_time_raw not in ['unknown', 'unavailable', 'none', ''] %}
+              {% set end_ts = as_timestamp(end_time_raw) %}
+              {% if end_ts is not none %}
+                {% set now_ts = as_timestamp(now()) %}
+                {% set diff = end_ts - now_ts %}
+                {% if diff > 0 %}
+                  {% set hours = (diff // 3600) |
+                  int %}
+                  {% set minutes = ((diff % 3600) // 60) |
+                  int %}
+                  Zostáva: {% if hours > 0 %}{{ hours }}h {% endif %}{{ minutes }}m
+                {% else %}
+                  Program skončený
+                {% endif %}
+              {% else %}
+                Čas konca nedostupný
+              {% endif %}
+            {% else %}
+              Čas konca nedostupný
+            {% endif %}
+          tap_action:
+            action: none
+      - type: template
+        entity: sensor.dishwasher_dvere
+        icon: >-
+          {% set door_state = states('sensor.dishwasher_dvere') %} {% if
+          door_state == 'open' %}
+            mdi:door-open
+          {% elif door_state == 'locked' %}
+            mdi:door-closed-lock
+          {% else %}
+            mdi:door-closed
+          {% endif %}
+        icon_color: |-
+          {% if states('sensor.dishwasher_dvere') == 'open' %}
+            orange
+          {% else %}
+            grey
+          {% endif %}
+        content: >-
+          {% set door_state = states('sensor.dishwasher_dvere') %} {% if
+          door_state == 'open' %}
+            Dvierka - Otvorené
+          {% elif door_state == 'locked' %}
+            Dvierka - Zamknuté
+          {%  elif door_state == 'closed' %}
+            Dvierka - Zatvorené
+          {% else %}
+            Dvierka: {{ door_state }}
+          {% endif %}
+        tap_action:
+          action: none
+      - type: conditional
+        conditions:
+          - entity: sensor.dishwasher_lestidlo_takmer_prazdne
+            state: "on"
+        chip:
+          type: template
+          icon: mdi:bottle-tonic-outline
+          icon_color: red
+          content: Leštidlo - Treba doplniť
+          tap_action:
+            action: none
+      - type: conditional
+        conditions:
+          - entity: sensor.dishwasher_sol_takmer_prazdna
+            state: "on"
+        chip:
+          type: template
+          icon: mdi:grain
+          icon_color: red
+          content: Soľ - Treba doplniť
+          tap_action:
+            action: none
+      - type: template
+        entity: switch.umyvackazasuvka
+        icon: |-
+          {% if is_state('switch.umyvackazasuvka', 'on') %}
+            mdi:power-plug
+          {% else %}
+            mdi:power-plug-off
+          {% endif %}
+        icon_color: |-
+          {% if is_state('switch.umyvackazasuvka', 'on') %}
+            green
+          {% else %}
+            grey
+          {% endif %}
+        content: |-
+          {% if is_state('switch.umyvackazasuvka', 'on') %}
+            Zásuvka: Zapnutá
+          {% else %}
+            Zásuvka: Vypnutá
+          {% endif %}
+        tap_action:
+          action: none
+      - type: template
+        entity: sensor.umyvackazasuvka_energy_power
+        icon: mdi:lightning-bolt
+        icon_color: yellow
+        content: >-
+          Spotreba: {{ states('sensor.umyvackazasuvka_energy_power') | float(0)
+          | round(1) }} W
+        tap_action:
+          action: none

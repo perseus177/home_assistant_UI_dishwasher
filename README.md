@@ -48,6 +48,7 @@ Táto konfigurácia je navrhnutá pre umývačku riadu **Bosch SMV88TX46E**.
 
 ![Screenshot_20251118_203904_Home Assistant](https://github.com/user-attachments/assets/9052b0f6-b6b7-41bc-87d7-7d02bd232443)
 ![Screenshot_20251118_205702_Home Assistant](https://github.com/user-attachments/assets/59c396c1-639d-4fed-bb2e-ed88ddfc1c1c)
+<img src="https://github.com/user-attachments/assets/9052b0f6-b6b7-41bc-87d7-7d02bd232443" width="50%" alt="Screenshot_20251118_203904_Home Assistant"/>
 
 
 #### 2. Detailné Ovládanie (Pop-up Modálne Okno)
